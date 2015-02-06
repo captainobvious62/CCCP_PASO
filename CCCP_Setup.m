@@ -1,0 +1,37 @@
+% Combined Cross Correlation Program Main Script
+%
+% This is a stand in for the eventual GUI that is being crafted for control
+% of this program. It serves as a means of providing standardization of
+% the process.
+%
+% Make the following are set before running!
+%--------------------------------------------
+% - All parameters in the 'general_settings.m' file are correct
+% - Template file created according to format and placed in the
+% 'template_folder' directory
+% - A reliable internet connection is available
+
+
+
+general_settings
+
+
+%Script to break amount down into more manageable time segments
+num_iterations = 1;
+
+% Set name for template file (this will be provided by a search dialog in a
+% the GUI incarnation
+
+template_file = ['PASO'];
+templates = str2func(template_file);
+initial = datenum(sprintf('%02d/%02d/%04d',start_month,...
+    start_day,start_year));
+terminal = datenum(sprintf('%02d/%02d/%04d',end_month,end_day,end_year));
+
+duration = terminal - initial;
+increment = duration/num_iterations;
+pickImport;
+generateTemplates;
+step = 1;
+    first_date = initial + (step - 1)*increment;
+    last_date = initial + step*increment;
