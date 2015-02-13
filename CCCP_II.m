@@ -14,11 +14,11 @@ for template_count = 1:length(template_list);
     if exist(folder_check,'dir')~=7
         mkdir(folder_check);
     end
-    result_savename = sprintf('./Results/Combined_Results_%s_to_%s.mat',...
+    result_savename = sprintf('Results/Combined_Results_%s_to_%s.mat',...
         datestr(first_date),datestr(last_date));
     results = load(result_savename);
     iterResult = results.results{template_count};
-    for station_count = 1:length(template_list{template_count})
+	parfor station_count = 1:length(template_list{template_count})
         %[template_list,tn] = templates();
         station_list = template_list{template_count};
         template = template_names{template_count};
