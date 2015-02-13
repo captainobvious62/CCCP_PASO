@@ -21,17 +21,19 @@ results = cell(1,length(template_list));
 printout_results = cell(1,length(template_list));
 all_results = cellstr({'Year','DOY','Seconds',...
     'CC Value','Template','Zulu @ Nearest'});
+txt_results = all_results;
+txt_results(7) = cellstr({'Template'});
 for template_count = 1:length(template_list);
     
     station_list = template_list{template_count};
     template = template_names{template_count};
-    template_results_savename = sprintf('./Results/%s/%s.%s_to_%s.mat',...
+    template_results_savename = sprintf('Results/%s/%s.%s_to_%s.mat',...
         template,template,datestr(first_date),datestr(last_date));
     template_results = load(template_results_savename);
     total_results = [];
     fprintf('Template %s\n',template)
     for i = 1:(last_date-first_date)+1
-        total_results = [total_results;template_results.template_results{i}];
+        total_results = [total_results;template_results.template_results];
     end
     mat_dates =doy2date(total_results(:,2),total_results(:,1)) +total_results(:,3)/86400;total_results = [total_results mat_dates];
     if isempty(total_results) ~=1
@@ -49,21 +51,26 @@ for template_count = 1:length(template_list);
         
         A = cellstr(num2str(print_results(:,1)));
         B = cellstr(num2str(print_results(:,2)));
-        C = cellstr(num2str(print_results(:,3)));
-        D = cellstr(num2str(print_results(:,4)));
-        E = cellstr(num2str(print_results(:,5)));
+        C = cellstr(num2str(print_results(:,3))); 
+	D = cellstr(num2str(print_results(:,4)));
+	E = cellstr(num2str(print_results(:,5)));
         F = cellstr(datestr(print_results(:,6)));
-        header =cellstr({'Year','DOY','Seconds','CC Value','Template',...
-            'Zulu @ Nearest'});        
+	G = cellstr(names);
+        header =cellstr({'Year','DOY','Seconds','CC Value', 'MATLAB Time',...
+            'Zulu @ Nearest'});
+	txt_header = header;
+	txt_header(7) = cellstr({'Template'});
         print_cell = [A,B,C,D,E,F];
-        all_results = [all_results;print_cell];
-        printed_cell = [header; print_cell];
+       	txt_cell = [A,B,C,D,E,F,G];
+	txt_results = [txt_results;txt_cell];
+	 all_results = [all_results;print_cell];
+        printed_cell = [txt_header; txt_cell];
         dlmcell(print_text_savename,printed_cell);
         save(template_results_savename,'print_results');        
     end
 end
 save(result_savename,'results');
-dlmcell(printout_savename_txt,'printout_results')
+cell2csv(printout_savename_txt,txt_results)
 save(all_results_savename,'all_results');
 
 
