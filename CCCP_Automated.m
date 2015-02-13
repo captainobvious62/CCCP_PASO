@@ -35,14 +35,14 @@ duration = terminal - initial;
 increment = duration/num_iterations;
 
 generateTemplates;
-
+step = 1;
 
 for step = 1:num_iterations
     
     
     first_date = initial + (step - 1)*increment;
     last_date = initial + step*increment;
-    %CCCP_Download_Buffer
+    CCCP_Download_Buffer
     CCCP_Zero
     CCCP_I
     CCCP_II
