@@ -15,7 +15,6 @@ disp('Running CCCP Zero')
 % for template_count = 1:length(template_list)
 %     station_list = template_list{template_count};
 %     clearresults(station_list(1),first_date,last_date)
-% end
 for i = first_date:last_date    
     YEAR = datevec(i);
     YEAR = YEAR(1);
@@ -23,7 +22,7 @@ for i = first_date:last_date
     fprintf('Iteration for %s %s commenced %s\n',num2str(YEAR),...
         num2str(DDD),datestr(now));
     dayResults = [];
-    parfor template_count = 1: length(template_list);
+   parfor template_count = 1: length(template_list);
         station_list = template_list{template_count};
         for station_count = 1:length(station_list)
             station_list(station_count).template_channels =...

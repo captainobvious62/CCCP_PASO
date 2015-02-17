@@ -20,15 +20,15 @@ month_length = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 %Starting Date/Time
 start_year = 2005;
-start_month = 04;
-start_day = 28;
+start_month = 05;
+start_day = 03;
 start_minute = 00;
 start_second = 00;
 
 %Ending Date/Time
 end_year = 2005;
 end_month = 05;
-end_day = 12;
+end_day = 06;
 end_minute = 00;
 end_second = 00;
 
@@ -53,9 +53,10 @@ time_before = 10;
 time_after = 10;
 
 %Filter Settings
+%Settings for HRSN
 lower_band = 1;
-upper_band = 15;
-filter = filterobject('B',[1 15], 4);
+upper_band = 50;
+filter = filterobject('B',[1 50], 4);
 scan_increment = 10; % seconds
 scan_increment = scan_increment/86400;
 

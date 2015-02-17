@@ -33,15 +33,21 @@ for template_count = 1:length(template_list);
     total_results = [];
     fprintf('Template %s\n',template)
     for i = 1:(last_date-first_date)+1
+        
+        if isfield(template_results,'print_results') == 1
+            template_results.template_results = template_results.print_results;
+            template_results = rmfield(template_results,'print_results');
+        end
         total_results = [total_results;template_results.template_results];
     end
-    mat_dates =doy2date(total_results(:,2),total_results(:,1)) +total_results(:,3)/86400;total_results = [total_results mat_dates];
     if isempty(total_results) ~=1
+        mat_dates = doy2date(total_results(:,2),total_results(:,1)) +total_results(:,3)/86400;total_results = [total_results mat_dates];
+        
         results{template_count} = total_results;
         %total_results_to_print = [total_results,results{template_count}(:,1),results{template_count}(:,2)+results{template_count}(:,3)];
         %total_results_to_print = sortrows(total_results_to_print,1);
-	total_results = sortrows(total_results,6);
-	names = cell(length(total_results(:,1)),1);
+        total_results = sortrows(total_results,6);
+        names = cell(length(total_results(:,1)),1);
         for j = 1:length(total_results(:,1))
             names{j} = template;
         end

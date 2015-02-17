@@ -1,14 +1,17 @@
 function [correlation_object,correlation_object_savename] = generateCorrelations(STA,NET,LOC,CHA,CHA_TEMPLATE,moveout,matches,low_bp,high_bp,before_grab,after_grab,template,erste,ende,trigger)
 
-correlation_object_savename = sprintf('./%s/%s/%s/%s/CO/%s.to.%s.%s.%s.mat',NET,STA,CHA,template,num2str(erste),num2str(ende),STA,CHA);
+correlation_object_savename = sprintf('%s/%s/%s/%s/CO/%s.to.%s.%s.%s.mat',NET,STA,CHA,template,num2str(erste),num2str(ende),STA,CHA);
 correlation_object = correlation();
 pick_number = 0;
 trace_number = 0;
 for i = 1:length(matches(:,1))
     
     sync_date = [datestr(doy2date(matches(i,2),matches(i,1))),' ',datestr((matches(i,3)+moveout)/86400,'HH:MM:SS.FFF')];
+%    datestr(sync_date)
     start_time = datenum(sync_date)-before_grab/86400;
+%    datestr(start_time)
     end_time = datenum(sync_date)+after_grab/86400;
+%    datestr(end_time)
     %% Obligitory fix for US network name change
     DAY = matches(i,2);
     YEAR = matches(i,1);
@@ -46,7 +49,7 @@ for i = 1:length(matches(:,1))
     while isempty(WF_Snippet) == 1 && failure == 0
         try
             fprintf('Downloading trace\n')
-            WF_Snippet = irisFetch.Traces(NET,STA,LOC, CHA, start_time,end_time,'http://service.ncedc.org','verbose');
+            WF_Snippet = irisFetch.Traces(NET,STA,LOC, CHA, start_time,end_time,'http://service.ncedc.org');%,'verbose');
             WF_Snippet = convertTraces(WF_Snippet);
         catch exception
             fprintf('Trying again....\n');
@@ -130,7 +133,7 @@ for i = 1:length(matches(:,1))
     if isempty(WF_Snippet) ~= 1;
         WF_Snippet = fillgaps(WF_Snippet,0);
         high_bp = get(WF_Snippet,'freq')*(0.8/2);
-        WF_Snippet = filter_waveform_BP(WF_Snippet,low_bp,high_bp);
+    %    WF_Snippet = filter_waveform_BP(WF_Snippet,low_bp,high_bp);
         WF_Snippet = addfield(WF_Snippet,'Rel_MAD',matches(i,4));
         WF_Snippet = addfield(WF_Snippet,'Phase',trigger);
         center_pick = doy2date(matches(i,2),matches(i,1))+matches(i,3)/86400 + moveout/86400;
@@ -147,7 +150,7 @@ for i = 1:length(matches(:,1))
     end
 end
 
-template_savename = sprintf('./%s/%s/%s/%s/%s.%s.%s.mat',NET,STA,CHA_TEMPLATE,template,template,STA,CHA_TEMPLATE);
+template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',NET,STA,CHA_TEMPLATE,template,template,STA,CHA_TEMPLATE);
 %template_savename = sprintf('%s/%s/Templates/%s.%s.%s.mat',NET,STA,template,STA,CHA_TEMPLATE);
 load(template_savename)
 fprintf('Template %s loaded.\n',template_savename);
@@ -158,7 +161,7 @@ if isempty(get(correlation_object,'waveforms')) == 1;
 else
     correlation_object = cat(correlation_object,wf_Temp);
 end
-save(correlation_object_savename,'correlation_object');
-fprintf('Correlation object %s saved.\n',correlation_object_savename);
+save(correlation_object_savename,'correlation_object')
+fprintf('Correlation object %s saved.\n',correlation_object_savename)
 
 end

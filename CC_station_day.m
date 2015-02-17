@@ -27,17 +27,16 @@ fprintf('%s %s %s %s\n',network,station,YEAR,DDD);
 
 
 isZero = [0,0,0];
-if exist([network,'/',station,'/mseed/',station,'.',CHA_E,'.',YEAR,'.',DDD],'file')
+if exist([network,'/',station,'/mseed/',station,'.',CHA_E,'.',num2str(YEAR),'.',num2str(DDD)],'file')
     if exist([network,'/',station,'/Templates/E/template_',id,'.mat'],'file')
         load([network,'/',station,'/Templates/E/template_',id,'.mat'])
         disp('E Template Loaded')
     else
-        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_E,id,id,station,CHA_E);
-	
+        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_E,id,id,station,CHA_E)
         %template_savename = sprintf('%s/%s/Templates/%s.%s.%s.mat',network,station,id,CHA_E);
         load(template_savename);
-	disp('E Template Loaded')        
-	wf_Temp = filter_waveform_BP(wf_Temp,1,100);
+        disp('E Template Loaded')
+        wf_Temp = filter_waveform_BP(wf_Temp,1,100);
         timevec =get(wf_Temp,'timevector');
         timevec = timevec - datenum(datestr(timevec(1),1));
         timevec = timevec *86400;
@@ -47,10 +46,9 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_E,'.',YEAR,'.',DDD],'fil
     end
     % strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_E,'.',YEAR,'.',DDD])
     try
-        E_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_E,'.',YEAR,'.',DDD]));
+        E_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_E,'.',num2str(YEAR),'.',num2str(DDD)]));
     catch exception
         disp('mseed value is zero')
-        
         isZero(1) = 1;
     end
     if isZero(1) == 0
@@ -66,36 +64,31 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_E,'.',YEAR,'.',DDD],'fil
         E_data=temp(intersect(good_day_E,I_E));
         clear temp
         E_bp=bandpass(E_data,low_bp,high_bp,1/E_seed(1).SampleRate,3);
-	if length(I_E) ~= length(E_bp)
-		if length(E_bp) > 86400*FREQ
-			E_bp = E_bp(1:86400*FREQ);
-		elseif length(E_bp) < 86400*FREQ
-			E_bp(length(E_bp+1):86400*FREQ) = 0;
-		end
-		if length(I_E) > 86400*FREQ
-			I_E = I_E(1:86400*FREQ);
-		elseif length(I_E) < 86400*FREQ
-			I_E(length(I_E+1):86400*FREQ) = 0;
-		end
-		ccc_E=normxcorr2(template_E(:,2),E_bp(:));
-	else
-	    ccc_E=normxcorr2(template_E(:,2),E_bp(I_E));
-	end
+        if length(I_E) ~= length(E_bp)
+            if length(E_bp) > 86400*FREQ
+                E_bp = E_bp(1:86400*FREQ);
+            elseif length(E_bp) < 86400*FREQ
+                E_bp(length(E_bp+1):86400*FREQ) = 0;
+            end
+            ccc_E=normxcorr2(template_E(:,2),E_bp(:));
+        else
+            ccc_E=normxcorr2(template_E(:,2),E_bp(:));
+        end
         clear E_seed E_time_vec E_data E_bp;
         comp(1) = 1;
     end
 end
 
-if exist([network,'/',station,'/mseed/',station,'.',CHA_N,'.',YEAR,'.',DDD],'file')
+if exist([network,'/',station,'/mseed/',station,'.',CHA_N,'.',num2str(YEAR),'.',num2str(DDD)],'file')
     if exist([network,'/',station,'/Templates/N/template_',id,'.mat'],'file')
         load([network,'/',station,'/Templates/N/template_',id,'.mat'])
         disp('N Template Loaded')
     else
-        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_N,id,id,station,CHA_N);
+        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_N,id,id,station,CHA_N)
         %template_savename = sprintf('%s/%s/%s/%s/%s.%s.%s.mat',network,station,CHA_N,id,id,station,CHA_N);
         %template_savename = sprintf('%s/%s/Templates/%s.%s.%s.mat',network,station,id,CHA_N);
         load(template_savename);
-	disp('N Template Loaded')
+        disp('N Template Loaded')
         wf_Temp = filter_waveform_BP(wf_Temp,1,100);
         timevec =get(wf_Temp,'timevector');
         timevec = timevec - datenum(datestr(timevec(1),1));
@@ -107,15 +100,13 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_N,'.',YEAR,'.',DDD],'fil
     % st
     %N_seed = rdmseed(strcat(ls([char(station),'/mseed/*BH',COMP,'*',YEAR,'*',DDD])));
     try
-        N_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_N,'.',YEAR,'.',DDD]));
+        N_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_N,'.',num2str(YEAR),'.',num2str(DDD)]));
     catch exception
         disp('mseed value is zero')
-        
         isZero(2) = 1;
     end
     if isZero(2) == 0
         disp([CHA_N,' exists'])
-        
         N_time_vec=datevec(cat(1,N_seed.t));
         tag=median(N_time_vec(:,3));
         good_day_N=find(N_time_vec(:,3)==tag);
@@ -127,38 +118,30 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_N,'.',YEAR,'.',DDD],'fil
         N_data=temp(intersect(good_day_N,I_N));
         clear temp;
         N_bp=bandpass(N_data,low_bp,high_bp,1/N_seed(1).SampleRate,3);
-	if length(I_N) ~= length(N_bp)
-		if length(N_bp) > 86400*FREQ
-			N_bp = N_bp(1:86400*FREQ);
-		elseif length(N_bp) < 86400*FREQ
-			N_bp(length(N_bp+1):86400*FREQ) = 0;
-		end
-		if length(I_N) > 86400*FREQ
-			I_N = I_N(1:86400*FREQ);
-		elseif length(I_N) < 86400*FREQ
-			I_N(length(I_N+1):86400*FREQ) = 0;
-		end
-		     ccc_N=normxcorr2(template_N(:,2),N_bp(:));
-	else
-		 ccc_N=normxcorr2(template_N(:,2),N_bp(I_N));
-	end
+        if length(I_N) ~= length(N_bp)
+            if length(N_bp) > 86400*FREQ
+                N_bp = N_bp(1:86400*FREQ);
+            elseif length(N_bp) < 86400*FREQ
+                N_bp(length(N_bp+1):86400*FREQ) = 0;
+            end
+            ccc_N=normxcorr2(template_N(:,2),N_bp(:));
+        else
+            ccc_N=normxcorr2(template_N(:,2),N_bp(:));
+        end
         clear N_seed N_time_vec;
         comp(2) = 1;
     end
-    
-    
-    
 end
-if exist([network,'/',station,'/mseed/',station,'.',CHA_Z,'.',YEAR,'.',DDD],'file')
+if exist([network,'/',station,'/mseed/',station,'.',CHA_Z,'.',num2str(YEAR),'.',num2str(DDD)],'file')
     if exist([network,'/',station,'/Templates/Z/template_',id,'.mat'],'file')
         load([network,'/',station,'/Templates/Z/template_',id,'.mat'])
         disp('Z Template Loaded')
     else
-        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_Z,id,id,station,CHA_Z);
+        template_savename = sprintf('%s/%s/%s/Templates/%s/template_%s.%s.%s.mat',network,station,CHA_Z,id,id,station,CHA_Z)
         %template_savename = sprintf('%s/%s/%s/%s/%s.%s.%s.mat',network,station,CHA_Z,id,id,station,CHA_Z);
         %template_savename = sprintf('%s/%s/Templates/%s.%s.%s.mat',network,station,id,CHA_Z);
         load(template_savename);
-	disp('Z Template Loaded')
+        disp('Z Template Loaded')
         wf_Temp = filter_waveform_BP(wf_Temp,1,100);
         timevec =get(wf_Temp,'timevector');
         timevec = timevec - datenum(datestr(timevec(1),1));
@@ -169,7 +152,7 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_Z,'.',YEAR,'.',DDD],'fil
     end
     %Z_seed = rdmseed(strcat(ls([char(station),'/mseed/*BH',COMP,'*',YEAR,'*',DAY])));
     try
-        Z_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_Z,'.',YEAR,'.',DDD]));
+        Z_seed = rdmseed(strcat([char(network),'/',char(station),'/mseed/',char(station),'.',CHA_Z,'.',num2str(YEAR),'.',num2str(DDD)]));
     catch exception
         disp('mseed value is zero')
         
@@ -177,7 +160,6 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_Z,'.',YEAR,'.',DDD],'fil
     end
     if isZero(3) == 0
         disp([CHA_Z,' exists'])
-        
         Z_time_vec=datevec(cat(1,Z_seed.t));
         tag=median(Z_time_vec(:,3));
         good_day_z=find(Z_time_vec(:,3)==tag);
@@ -189,24 +171,18 @@ if exist([network,'/',station,'/mseed/',station,'.',CHA_Z,'.',YEAR,'.',DDD],'fil
         Z_data=temp(intersect(good_day_z,I_Z));
         clear temp;
         Z_bp=bandpass(Z_data,low_bp,high_bp,1/Z_seed(1).SampleRate,3);
-	if length(I_Z) ~= length(Z_bp)
-	if length(Z_bp) > 86400*FREQ
-		Z_bp = Z_bp(1:86400*FREQ);
-	elseif length(Z_bp) < 86400*FREQ
-		Z_bp(length(Z_bp+1):86400*FREQ) = 0;
-	end
-	if length(I_Z) > 86400*FREQ
-		I_Z = I_Z(1:86400*FREQ);
-	elseif length(I_Z) < 86400*FREQ
-		I_Z(length(I_Z+1):86400*FREQ) = 0;
-	end
-	ccc_Z=normxcorr2(template_Z(:,2),Z_bp(:));
-	else
-        ccc_Z=normxcorr2(template_Z(:,2),Z_bp(I_Z));
-	end
-        clear Z_seed Z_time_vec;
+        if isequal(length(I_Z),length(Z_bp)) ~= 1
+            if length(Z_bp) > 86400*FREQ
+                Z_bp = Z_bp(1:86400*FREQ);
+            elseif length(Z_bp) < 86400*FREQ
+                Z_bp(length(Z_bp+1):86400*FREQ) = 0;
+            end
+            ccc_Z=normxcorr2(template_Z(:,2),Z_bp(:));
+        else
+            ccc_Z=normxcorr2(template_Z(:,2),Z_bp(:));
+        end
+        clear Z_seed Z_time_vec Z_data Z_bp;
         comp(3) = 1;
-        
     end
 end
 %for 40 Hz
@@ -220,6 +196,6 @@ end
 if comp(3) == 1
     ccc_station = ccc_station + interp1(B_Z,ccc_Z(1:length(B_Z)),time,'nearest');
 end
-%end
+
 
 

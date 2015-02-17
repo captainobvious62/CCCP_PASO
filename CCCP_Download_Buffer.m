@@ -31,11 +31,6 @@ parfor i = (first_date):(last_date)
             if exist(folder_check,'dir')~=7
                 mkdir(folder_check);
             end
-            ccc_STA_savename = sprintf('./%s/%s/CCC/%s/cccSum.%04d.%03d.mat',single_station.network,single_station.station,single_station.template,YEAR,DDD);
-            if exist(ccc_STA_savename,'file') == 0
-	        [time,ccc_STA] = CC_station_day(single_station.template,single_station.network,single_station.station,YEAR,DDD,single_station.channel_list{1},single_station.channel_list{2},single_station.channel_list{3},single_station.freq);
-                parsave(ccc_STA_savename,ccc_STA);
-            end
             station_list = addNumericTime(station_list);
         end
     end  

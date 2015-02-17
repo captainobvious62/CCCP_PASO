@@ -13,7 +13,9 @@
 
 
 
-
+addpath(genpath('/home/geovault-00/rlwalker/MATLAB/seizmo'))
+addpath(genpath('/home/geovault-00/rlwalker/MATLAB/GISMO'))
+addpath(genpath('/home/geovault-00/rlwalker/MATLAB/CCCP_PASO'))
 %Script to break amount down into more manageable time segments
 num_iterations = 1;
 
